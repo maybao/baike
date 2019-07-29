@@ -1,6 +1,6 @@
 # html下载器
-from urllib import parse
 from urllib import request
+import requests
 
 
 class HtmlDownloader(object):
@@ -8,11 +8,13 @@ class HtmlDownloader(object):
     def download(self, url):
         if url is None:
             return None
-        response = request.urlopen(url)
-        if response.getcode() != 200:
+        sessions = requests.session()
+        sessions.headers[
+            'User-Agent'] = 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) ' \
+                            'Chrome/75.0.3770.142 Safari/537.36'
+        resp = sessions.get(url)
+        resp.encoding = 'utf-8'
+        if resp.status_code != 200:
             return None
-        return response.read()
+        return resp.text.encode('utf-8')
 
-# if __name__ == '__main__':
-#     text = HtmlDownloader().download('https://baike.baidu.com/item/Python/407313')
-#     print(text)
